@@ -4,39 +4,159 @@ This system processes medical reports (specifically discharge letters) to extrac
 
 ## Prerequisites
 
-- Python 3.8 or higher
-- pip (Python package installer)
-- Virtual environment (recommended)
+- macOS 10.15 or higher
+- Internet connection (for initial setup only)
+- Terminal app (comes pre-installed on your Mac)
 
-## Installation
+## Installation for Mac (First Time Setup)
 
-1. Clone this repository or download the source code.
+1. Open Terminal:
+   - Click the Spotlight search icon (magnifying glass) in the top-right corner of your screen
+   - Type "Terminal" and press Enter
+   - This will open a command-line interface where you'll type commands
 
-2. Create and activate a virtual environment:
+2. Install Homebrew (Mac's package manager):
+   - Copy and paste this entire command into Terminal and press Enter:
    ```bash
-   # Create virtual environment
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+   - Follow any on-screen instructions (you may need to enter your Mac password)
+   - When it asks you to press RETURN to continue, do so
+
+3. Install Python using Homebrew:
+   ```bash
+   brew install python
+   ```
+   - This installs Python on your system
+   - To verify the installation, type:
+   ```bash
+   python --version
+   ```
+   You should see something like "Python 3.x.x"
+   
+   Note: If `python` command is not found, use `python3` instead. To make `python` work:
+   ```bash
+   echo 'alias python=python3' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+
+4. Download this project:
+   - Download and install Git (if you haven't already):
+   ```bash
+   brew install git
+   ```
+   - Clone (download) this repository:
+   ```bash
+   cd ~/Documents
+   git clone [YOUR_REPOSITORY_URL]
+   cd MedParse
+   ```
+   Replace [YOUR_REPOSITORY_URL] with the actual URL of your repository
+
+5. Set up Python environment:
+   ```bash
+   # Create a new Python environment (this keeps the project's packages separate from other projects)
    python -m venv venv
    
-   # Activate virtual environment (Windows)
-   venv\Scripts\activate
-   
-   # Activate virtual environment (Mac/Linux)
+   # Activate the environment (you'll need to do this each time you work on the project)
    source venv/bin/activate
+   
+   # Your command prompt should now start with (venv)
    ```
 
-3. Install the required packages:
+6. Install required packages:
    ```bash
+   # Upgrade pip (Python's package installer)
+   pip install --upgrade pip
+   
+   # Install all required packages
    pip install -r requirements.txt
    ```
+   This may take a few minutes.
 
-4. Download the required spaCy model:
+7. Install the German language model:
    ```bash
    python -m spacy download de_core_news_sm
    ```
 
-5. Add your medical report files:
-   - Place your medical report files (*.docx format) in the `Patient_Data/` directory
-   - The system expects Word documents (.docx files) containing medical discharge letters
+8. Prepare your data:
+   - Create a folder called `Patient_Data` in the project directory if it doesn't exist:
+   ```bash
+   mkdir -p Patient_Data
+   ```
+   - Copy your medical report files (*.docx format) into the `Patient_Data` folder
+   - You can do this by dragging and dropping files in Finder, or using the command line:
+   ```bash
+   cp path/to/your/files/*.docx Patient_Data/
+   ```
+
+## Using the System
+
+1. Each time you want to use the system:
+   - Open Terminal
+   - Navigate to the project directory:
+   ```bash
+   cd ~/Documents/MedParse
+   ```
+   - Activate the Python environment:
+   ```bash
+   source venv/bin/activate
+   ```
+   You'll know it's activated when you see `(venv)` at the start of your Terminal prompt
+
+2. Process your data:
+   ```bash
+   # Convert documents to text format
+   python convert_patient_data_to_txt_mac.py
+   
+   # Extract patient data
+   python extract_patient_data.py
+   
+   # Analyze tumor status
+   python tumor_status_analysis.py
+   
+   # Check for missing data
+   python check_missing_data.py
+   ```
+
+3. View visualizations:
+   ```bash
+   # Start Jupyter Notebook
+   jupyter notebook
+   ```
+   - This will open a new tab in your web browser
+   - Click on `VisualizePatients.ipynb`
+   - Follow the instructions in the notebook
+
+4. When you're done:
+   - Close the Jupyter tab in your browser
+   - Return to Terminal and press Ctrl+C to stop Jupyter
+   - Type `deactivate` to exit the Python environment
+
+## Troubleshooting for Mac Users
+
+1. If Terminal says "command not found":
+   - Make sure you've activated the environment: `source venv/bin/activate`
+   - Check if you're in the correct directory: `pwd` should show `/Users/YourUsername/Documents/MedParse`
+
+2. If you see permission errors:
+   - Use `sudo` before commands that fail (you'll need to enter your Mac password)
+   - Example: `sudo pip install -r requirements.txt`
+
+3. If Python installation fails:
+   - Try updating Homebrew: `brew update`
+   - Then try again: `brew install python`
+
+4. If you close Terminal and come back later:
+   - You'll need to activate the environment again:
+   ```bash
+   cd ~/Documents/MedParse
+   source venv/bin/activate
+   ```
+
+5. If you see line ending warnings from Git:
+   - This is normal on Mac systems
+   - You can ignore these warnings, they won't affect functionality
 
 ## Project Structure
 
