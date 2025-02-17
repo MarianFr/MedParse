@@ -17,16 +17,26 @@ except Exception as e:
 def convert_to_pdf(input_path, pdf_path):
     original_dir = os.getcwd()
     try:
-        # Try to locate the LibreOffice executable
-        soffice_path = shutil.which("soffice")
-        if soffice_path is None:
-            soffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
-            if not os.path.exists(soffice_path):
-                raise FileNotFoundError("LibreOffice not found. Please install LibreOffice.")
+        # Try to locate the LibreOffice executable for macOS
+        soffice_paths = [
+            "/Applications/LibreOffice.app/Contents/MacOS/soffice",
+            "/Applications/LibreOffice.app/Contents/MacOS/LibreOffice",
+            shutil.which("soffice"),
+            shutil.which("libreoffice")
+        ]
         
-        # Get absolute paths and ensure they use backslashes
-        abs_input_path = os.path.abspath(input_path).replace('/', '\\')
-        abs_pdf_path = os.path.abspath(pdf_path).replace('/', '\\')
+        soffice_path = None
+        for path in soffice_paths:
+            if path and os.path.exists(path):
+                soffice_path = path
+                break
+                
+        if soffice_path is None:
+            raise FileNotFoundError("LibreOffice not found. Please install LibreOffice.")
+        
+        # Get absolute paths and use forward slashes for macOS
+        abs_input_path = os.path.abspath(input_path)
+        abs_pdf_path = os.path.abspath(pdf_path)
         abs_output_dir = os.path.dirname(abs_pdf_path)
         
         # Create output directory if it doesn't exist
@@ -36,7 +46,7 @@ def convert_to_pdf(input_path, pdf_path):
         # Run LibreOffice conversion directly in the output directory
         os.chdir(abs_output_dir)
         
-        # Run LibreOffice conversion
+        # Run LibreOffice conversion with macOS-compatible command
         cmd = [
             soffice_path,
             '--headless',
@@ -48,6 +58,7 @@ def convert_to_pdf(input_path, pdf_path):
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         if result.returncode != 0:
+            print(f"LibreOffice conversion error: {result.stderr}")  # Add error logging
             return False
         
         # Give LibreOffice some time to finish writing the file
@@ -59,14 +70,17 @@ def convert_to_pdf(input_path, pdf_path):
         
         # Verify and move the PDF if needed
         if os.path.exists(expected_path):
-            if expected_path.lower() != abs_pdf_path.lower():
+            if expected_path != abs_pdf_path:
                 if os.path.exists(abs_pdf_path):
                     os.remove(abs_pdf_path)
                 shutil.move(expected_path, abs_pdf_path)
             return True
+        
+        print(f"Expected PDF not found at: {expected_path}")  # Add debugging
         return False
         
-    except Exception:
+    except Exception as e:
+        print(f"Conversion error: {str(e)}")  # Add error logging
         return False
         
     finally:
