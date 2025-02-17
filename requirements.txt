@@ -6,4 +6,7 @@ pathlib
 numpy
 gunicorn
 Werkzeug
-Jinja2 
+Jinja2
+pdfplumber
+nltk
+tqdm 
