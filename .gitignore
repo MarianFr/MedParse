@@ -1,6 +1,8 @@
-# Ignore processed outputs and patient data
-processed_output/
-Patient_Data/
+# Ignore processed outputs and patient data contents
+processed_output/*
+!processed_output/.gitkeep
+Patient_Data/*
+!Patient_Data/.gitkeep
 processed_patients.json
 
 # Python virtual environment

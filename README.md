@@ -62,10 +62,15 @@ This system processes medical reports (specifically discharge letters) to extrac
    pip install -r requirements.txt
    ```
 
+6. Add your medical report files:
+   - Place your medical report files (*.docx format) in the `Patient_Data/` directory
+   - The system expects Word documents (.docx files) containing medical discharge letters
+   - Make sure the documents follow the expected format for proper data extraction
+
 ## Project Structure
 
-- `Patient_Data/` - Directory containing input Word documents
-- `processed_output/` - Directory containing processed text files
+- `Patient_Data/` - Directory containing input Word documents (add your .docx files here)
+- `processed_output/` - Directory containing processed text files (automatically generated)
 - `templates/` - HTML templates for the web interface
 - `app.py` - Flask web application
 - `extract_patient_data.py` - Script for processing medical reports
