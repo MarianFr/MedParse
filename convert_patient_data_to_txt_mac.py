@@ -1,18 +1,10 @@
 from docx import Document
 import pdfplumber
-import nltk
-from nltk.tokenize import word_tokenize
 import os
 import time
 import subprocess
 import shutil
 from tqdm import tqdm
-
-# Download required NLTK data
-try:
-    nltk.download('punkt', quiet=True)
-except Exception as e:
-    print(f"Warning: Could not download NLTK data: {str(e)}")
 
 def convert_to_pdf(input_path, pdf_path):
     original_dir = os.getcwd()
@@ -126,16 +118,14 @@ def process_docx(input_path, output_path):
         with open(abs_output_path, 'w', encoding='utf-8') as f:
             f.write(text)
         
-        tokens = word_tokenize(text)
-        
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
         
-        return len(tokens)
+        return True
         
     except Exception as e:
         print(f"Error processing {os.path.basename(input_path)}: {str(e)}")
-        return None
+        return False
 
 if __name__ == "__main__":
     # Create output directory if it doesn't exist
@@ -159,7 +149,6 @@ if __name__ == "__main__":
 
         print(f"Processing {len(docx_files)} files...")
         
-        total_tokens = 0
         processed_files = 0
         
         # Process files with progress bar
@@ -168,16 +157,11 @@ if __name__ == "__main__":
             base_name = os.path.splitext(docx_file)[0]
             output_path = os.path.join(output_dir, f"{base_name}.txt")
             
-            tokens = process_docx(input_path, output_path)
-            if tokens:
-                total_tokens += tokens
+            if process_docx(input_path, output_path):
                 processed_files += 1
         
         # Print summary
         print(f"\nProcessed {processed_files}/{len(docx_files)} files successfully")
-        if processed_files > 0:
-            print(f"Total tokens extracted: {total_tokens}")
-            print(f"Average tokens per file: {total_tokens // processed_files}")
             
     except KeyboardInterrupt:
         print("\nProcessing interrupted by user")
