@@ -1,6 +1,6 @@
 # Medical Report Processing System
 
-This system processes medical reports (specifically discharge letters) to extract and visualize patient data. It includes functionality for processing Word documents, extracting structured data, and presenting it through a web interface.
+This system processes medical reports (specifically discharge letters) to extract and analyze patient data, with a focus on tumor status analysis and patient demographics. It includes functionality for processing Word documents, extracting structured data, and generating comprehensive visualizations.
 
 ## Prerequisites
 
@@ -8,103 +8,135 @@ This system processes medical reports (specifically discharge letters) to extrac
 - pip (Python package installer)
 - Virtual environment (recommended)
 
-## Installation for Mac Users (First Time Setup)
+## Installation
 
-1. Install Python:
-   - Open Terminal (press Cmd + Space, type "Terminal" and press Enter)
-   - Install Homebrew (Mac's package manager) if you don't have it:
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-   - Install Python using Homebrew:
-   ```bash
-   brew install python
-   ```
-   - Verify the installation:
-   ```bash
-   python3 --version
-   ```
-   You should see Python 3.x.x printed in the terminal.
+1. Clone this repository or download the source code.
 
-   - (Optional) To use `python` instead of `python3`, add these lines to your shell profile (~/.zshrc or ~/.bash_profile):
-   ```bash
-   alias python=python3
-   alias pip=pip3
-   ```
-   Then reload your profile:
-   ```bash
-   source ~/.zshrc  # if using zsh
-   # OR
-   source ~/.bash_profile  # if using bash
-   ```
-   After this, you can use `python` and `pip` commands instead of `python3` and `pip3`.
-
-2. Clone this repository or download the source code.
-
-3. Open Terminal and navigate to the project directory:
-   ```bash
-   cd path/to/your/project
-   ```
-   (Replace "path/to/your/project" with the actual path where you saved the project)
-
-4. Create and activate a virtual environment:
+2. Create and activate a virtual environment:
    ```bash
    # Create virtual environment
    python -m venv venv
    
-   # Activate virtual environment
+   # Activate virtual environment (Windows)
+   venv\Scripts\activate
+   
+   # Activate virtual environment (Mac/Linux)
    source venv/bin/activate
    ```
-   When the virtual environment is activated, you'll see `(venv)` at the beginning of your terminal prompt.
 
-5. Install the required packages:
+3. Install the required packages:
    ```bash
    pip install -r requirements.txt
    ```
 
-6. Add your medical report files:
+4. Download the required spaCy model:
+   ```bash
+   python -m spacy download de_core_news_sm
+   ```
+
+5. Add your medical report files:
    - Place your medical report files (*.docx format) in the `Patient_Data/` directory
    - The system expects Word documents (.docx files) containing medical discharge letters
-   - Make sure the documents follow the expected format for proper data extraction
 
 ## Project Structure
 
-- `Patient_Data/` - Directory containing input Word documents (add your .docx files here)
-- `processed_output/` - Directory containing processed text files (automatically generated)
-- `templates/` - HTML templates for the web interface
-- `app.py` - Flask web application
-- `extract_patient_data.py` - Script for processing medical reports
-- `extract_patient_data_2.py` - Enhanced version of the processing script
+- `Patient_Data/` - Directory for input Word documents
+- `processed_output/` - Directory containing processed text files
+- `extract_patient_data.py` - Main script for processing medical reports
+- `convert_patient_data_to_txt_windows.py` - Windows-specific conversion script
+- `convert_patient_data_to_txt_mac.py` - Mac-specific conversion script
+- `tumor_status_analysis.py` - Script for analyzing tumor status data
+- `check_missing_data.py` - Script for identifying missing or incomplete data
+- `VisualizePatients.ipynb` - Jupyter notebook for data visualization
+- `processed_patients.json` - Structured output of processed patient data
+
+## Features
+
+### 1. Data Extraction
+- Processes medical discharge letters in Word format
+- Extracts key patient information including:
+  - Demographic data
+  - Tumor status (TNM classification)
+  - ECOG scores
+  - Treatment information
+
+### 2. Data Analysis
+- Tumor status analysis with detailed TNM classification
+- Patient demographics visualization
+- Statistical analysis of medical parameters
+- Missing data identification and reporting
+
+### 3. Visualization
+The system provides comprehensive visualization capabilities through both Python scripts and Jupyter notebooks:
+
+#### Tumor Status Analysis (`tumor_status_analysis.py`)
+- Complete tumor status distribution
+- Individual T, N, M stage distributions
+- Stage correlation heatmaps
+- Stage prefix analysis (c/p)
+- Network visualization of stage combinations
+
+#### Patient Visualization (`VisualizePatients.ipynb`)
+- Gender distribution
+- Age demographics
+- ECOG score analysis
+- Interactive plots and charts
 
 ## Usage
 
-1. Make sure your virtual environment is activated. If you just followed the installation steps, it should be. If not, activate it:
+1. Data Processing:
    ```bash
-   source venv/bin/activate
-   ```
-   You'll know it's activated when you see `(venv)` at the start of your terminal prompt.
-
-2. Place your medical reports (Word documents) in the `Patient_Data/` directory.
-
-3. Process the documents by running:
-   ```bash
-   python extract_patient_data_2.py
-   ```
-   This will create processed text files in the `processed_output/` directory and generate a JSON file with structured patient data.
-
-4. Start the web application:
-   ```bash
-   python app.py
+   # For Windows users
+   python convert_patient_data_to_txt_windows.py
+   
+   # For Mac users
+   python convert_patient_data_to_txt_mac.py
    ```
 
-5. Open your web browser and navigate to `http://127.0.0.1:5000` to view the dashboard.
-
-6. When you're done, you can deactivate the virtual environment by typing:
+2. Extract Patient Data:
    ```bash
-   deactivate
+   python extract_patient_data.py
    ```
 
-Note: If you close your Terminal and come back later, you'll need to:
-1. Navigate back to your project directory (`cd path/to/your/project`)
-2. Reactivate the virtual environment (`source venv/bin/activate`)
-3. Then you can run the scripts again
+3. Analyze Tumor Status:
+   ```bash
+   python tumor_status_analysis.py
+   ```
+
+4. Check for Missing Data:
+   ```bash
+   python check_missing_data.py
+   ```
+
+5. For detailed visualizations, open and run `VisualizePatients.ipynb` in Jupyter:
+   ```bash
+   jupyter notebook VisualizePatients.ipynb
+   ```
+
+## Output
+
+- Processed text files in `processed_output/`
+- Structured JSON data in `processed_patients.json`
+- Visualization plots in respective directories
+- Analysis reports and statistics
+
+## Notes
+
+- The system is designed to handle German medical reports
+- Ensure proper encoding (UTF-8) for all input files
+- Regular expressions and NLP models are optimized for German medical terminology
+- The visualization tools are designed to handle missing or incomplete data gracefully
+
+## Troubleshooting
+
+1. If you encounter encoding issues:
+   - Ensure all input files are in UTF-8 format
+   - Use the appropriate conversion script for your operating system
+
+2. If spaCy model fails to load:
+   - Ensure you've run `python -m spacy download de_core_news_sm`
+   - Check your Python environment is activated
+
+3. For visualization issues:
+   - Ensure all required dependencies are installed
+   - Check Jupyter notebook kernel is using the correct environment
